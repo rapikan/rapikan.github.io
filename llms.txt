@@ -1,0 +1,6 @@
+# Rapikan Web Formatter
+
+Platform formatter kode multi-bahasa yang berjalan 100% secara lokal tanpa membebani ekstensi IDE Anda.
+
+Pelajari lebih lanjut di dokumentasi kami:
+[Dokumentasi Rapikan](https://rapikan.nabilaba.my.id/id/docs)

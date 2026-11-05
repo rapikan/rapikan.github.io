@@ -1,0 +1,48 @@
+# 1. Matikan fitur auto-tambah garis miring bawaan Apache
+DirectorySlash Off
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 2. Kalau ada yang ngakses URL pakai slash di akhir (misal: /id/docs/), 
+  # paksa redirect (301) ke URL bersih tanpa slash (/id/docs) demi SEO.
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+  # 3. Kalau URL yang diakses adalah sebuah folder (tanpa slash),
+  # baca file index.html di dalamnya secara diam-diam (URL di browser tetap bersih).
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^(.*)$ $1/index.html [L]
+
+  # --- LOGIKA 404 ---
+  
+  # 404 untuk rute Indonesia
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^id/ /id/404.html [L]
+
+  # 404 untuk rute Mandarin
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^zh-cn/ /zh-cn/404.html [L]
+
+  # 404 untuk Inggris / Default Universal
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /404.html [L]
+</IfModule>
+
+ErrorDocument 404 /404.html
+
+# --- BROWSER CACHING PAKAI HEADERS ---
+<IfModule mod_headers.c>
+  # Cache aset statis 1 tahun
+  <FilesMatch "\.(js|css|svg|png|jpg|jpeg|webp|woff2)$">
+    Header set Cache-Control "max-age=31536000, public"
+  </FilesMatch>
+
+  # Jangan cache file HTML
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
